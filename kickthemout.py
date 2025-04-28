@@ -9,11 +9,6 @@ See License at nikolaskama.me (https://nikolaskama.me/kickthemoutproject)
 
 import os, sys, logging, math, traceback, optparse, threading
 from time import sleep
-
-import netifaces
-from scapy import utils
-from scapy.layers.l2 import Ether, ARP
-
 BLUE, RED, WHITE, YELLOW, MAGENTA, GREEN, END = '\33[94m', '\033[91m', '\33[97m', '\33[93m', '\033[1;35m', '\033[1;32m', '\033[0m'
 
 try:
@@ -189,13 +184,17 @@ def getDefaultInterfaceMAC():
 # retrieve gateway IP
 def getGatewayIP():
     global stopAnimation
-    gws = netifaces.gateways()
-    default_gateway = gws.get('default', {}).get(netifaces.AF_INET)
-    if default_gateway:
-        return default_gateway[0]
-    else:
-        return None
-
+    try:
+        getGateway, timeout = sr1(IP(dst="github.com", ttl=0) / ICMP() / "XXXXXXXXXXX", verbose=False, timeout=4)
+        if timeout:
+            raise Exception()
+        return getGateway.src
+    except:
+        # request gateway IP address (after failed detection by scapy)
+        stopAnimation = True
+        print("\n{}ERROR: Gateway IP could not be obtained. Please enter IP manually.{}\n".format(RED, END))
+        header = ('{}kickthemout{}> {}Enter Gateway IP {}(e.g. 192.168.0.1): '.format(BLUE, WHITE, RED, END))
+        return (input(header))
 
 
 
@@ -211,22 +210,29 @@ def retrieveMACAddress(host):
         return False
 
 
+import requests
 
-# resolve mac address of each vendor
 def resolveMac(mac):
     try:
-        # send request to macvendors.co
-        url = "http://macvendors.co/api/vendorname/"
-        request = Request(url + mac, headers={'User-Agent': "API Browser"})
-        response = urlopen(request)
-        vendor = response.read()
-        vendor = vendor.decode("utf-8")
-        vendor = vendor[:25]
-        return vendor
-    except KeyboardInterrupt:
-        shutdown()
-    except:
-        return "N/A"
+        mac = mac.upper().replace(":", "-")
+        url = f"https://api.maclookup.app/v2/macs/{mac}"
+        response = requests.get(url)
+
+        # Check for a successful response
+        if response.status_code == 200:
+            data = response.json()
+
+            # Extract the manufacturer name (company)
+            manufacturer = data.get("company", "")
+
+            # Return only the manufacturer name (company), or an empty string if not found
+            return manufacturer if manufacturer else "Unknown"
+        else:
+            print(f"Error: Received status code {response.status_code}")
+            return "Unknown"
+    except Exception as e:
+        print(f"Error: {e}")
+        return "Unknown"
 
 
 
@@ -399,7 +405,7 @@ def kickoneoff():
         try:
             hostname = utils.socket.gethostbyaddr(onlineIPs[i])[0]
         except:
-            hostname = "N/A"
+            hostname = "Active"
         vendor = resolveMac(mac)
         print("  [{}{}{}] {}{}{}\t{}{}\t{} ({}{}{}){}".format(YELLOW, str(i), WHITE, RED, str(onlineIPs[i]), BLUE, mac, GREEN, vendor, YELLOW, hostname, GREEN, END))
 
@@ -482,7 +488,7 @@ def kicksomeoff():
         try:
             hostname = utils.socket.gethostbyaddr(onlineIPs[i])[0]
         except:
-            hostname = "N/A"
+            hostname = "Active"
         vendor = resolveMac(mac)
         print("  [{}{}{}] {}{}{}\t{}{}\t{} ({}{}{}){}".format(YELLOW, str(i), WHITE, RED, str(onlineIPs[i]), BLUE, mac, GREEN, vendor, YELLOW, hostname, GREEN, END))
 
@@ -576,7 +582,7 @@ def kickalloff():
         try:
             hostname = utils.socket.gethostbyaddr(onlineIPs[i])[0]
         except:
-            hostname = "N/A"
+            hostname = "Active"
         vendor = resolveMac(mac)
         print("  [{}{}{}] {}{}{}\t{}{}\t{} ({}{}{}){}".format(YELLOW, str(i), WHITE, RED, str(onlineIPs[i]), BLUE, mac, GREEN, vendor, YELLOW, hostname, GREEN, END))
     
@@ -701,7 +707,7 @@ def main():
             try:
                 hostname = utils.socket.gethostbyaddr(onlineIPs[i])[0]
             except:
-                hostname = "N/A"
+                hostname = "Active"
             vendor = resolveMac(mac)
             print("  [{}{}{}] {}{}{}\t{}{}\t{} ({}{}{}){}".format(YELLOW, str(i), WHITE, RED, str(onlineIPs[i]), BLUE, mac, GREEN, vendor, YELLOW, hostname, GREEN, END))
 

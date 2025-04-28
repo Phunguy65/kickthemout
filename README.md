@@ -1,5 +1,3 @@
-![KickThemOut Logo](http://nikolaskama.me/content/images/2017/02/kickthemout_small.png)
-
 # KickThemOut
 
 > [KickThemOut](https://nikolaskama.me/kickthemoutproject) - **Kick Devices Off Your Network**
@@ -13,14 +11,12 @@ It allows you to select specific or all devices and ARP spoofs them off your loc
 
 Authors: [Nikolaos Kamarinakis](mailto:nikolaskam@gmail.com) & [David Schütz](mailto:xdavid@protonmail.com).
 
-[![Build Badge](https://travis-ci.org/k4m4/kickthemout.svg?branch=master)](https://travis-ci.org/k4m4/kickthemout)
 [![License Badge](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/k4m4/kickthemout/blob/master/LICENSE)
 [![Compatibility](https://img.shields.io/badge/python-3-brightgreen.svg)](https://github.com/k4m4/kickthemout)
 [![GitHub Stars](https://img.shields.io/github/stars/k4m4/kickthemout.svg)](https://github.com/k4m4/kickthemout/stargazers)
 
 ---
 
-<p align="center">✨Read my latest post: <a href="https://nikolaskama.me/kickthemout-v2-0/"><i>KickThemout v2.0! 🎉</i></a></p>
     
 -------------
 
@@ -28,16 +24,31 @@ Authors: [Nikolaos Kamarinakis](mailto:nikolaskam@gmail.com) & [David Schütz](m
 
 ## Debian Installation
 
-You can download KickThemOut by cloning the [Git Repo](https://github.com/k4m4/kickthemout) and simply installing its requirements:
+**NOTE**
+After most linux distros/Mac implemented PEP 668, you can no longer use **pip** to install system-wide python dependencies without a virtual environment. For most distros you will need to install the dependencies through your package manager using a command like this: ``` sudo apt install python3-packagename ``` 
+
+You can download kickthemout by using the setup.sh, or cloning the repo:
+
+**IF USING THE SETEUP.SH (Debian Systems ONLY) Follow the instructions below:**
+```
+1. create the setup.sh shell script by copying its contents from this repo.
+2. ❯❯❯ chmod +x setup.sh
+3. ❯❯❯ ./setup.sh
+```
+4. The script will clone the repo, install needed dependencies, and run kickthemout for the first time!
+
+
+**DEBIAN MANUAL INSTALL INSTRUCTIONS BELOW:**
+
 
 ```
 ~ ❯❯❯ sudo apt-get update && sudo apt-get install nmap
 
+~ ❯❯❯ sudo apt install python3-nmap && sudo apt install python3-scapy && sudo apt install python3-netifaces
+
 ~ ❯❯❯ git clone https://github.com/k4m4/kickthemout.git
 
 ~ ❯❯❯ cd kickthemout/
-
-~/kickthemout ❯❯❯ sudo -H pip3 install -r requirements.txt
 
 ~/kickthemout ❯❯❯ sudo python3 kickthemout.py
 ```
@@ -45,7 +56,7 @@ You can download KickThemOut by cloning the [Git Repo](https://github.com/k4m4/k
 
 ## MacOS Installation
 
-If you would like to install KickThemOut on a Mac, please run the following:
+If you would like to install KickThemOut on a Mac, please run the following: **NOTE: You will need a virtual environment on mac**
 
 ```
 ~ ❯❯❯ brew install libdnet nmap
@@ -54,9 +65,10 @@ If you would like to install KickThemOut on a Mac, please run the following:
 
 ~ ❯❯❯ cd kickthemout/
 
-~/kickthemout ❯❯❯ sudo -H pip3 install -r requirements.txt
+~/kickthemout ❯❯❯ sudo -H pip3 install -r requirements.txt 
 
 ~/kickthemout ❯❯❯ sudo python3 kickthemout.py
+
 ```
 
 **NOTE**: You need to have [Homebrew](http://brew.sh/) installed before running the Mac OS installation. 
@@ -66,16 +78,18 @@ Also, **keep in mind** that you might be asked to run some extra commands after 
 
 ## ArchLinux Installation
 
-You can download KickThemOut on an Arch based system by executing the following:
+You can download KickThemOut on an Arch based system by executing the following: 
+
+**NOTE: You will need a virtual environment to use pip, unless you install the python dependencies through the AUR as PACMAN does not currently have the needed dependencies**
 
 ```
 ~ ❯❯❯ git clone https://github.com/k4m4/kickthemout.git
 
 ~ ❯❯❯ cd kickthemout/
 
-~/kickthemout ❯❯❯ sudo -H pip3 install -r requirements.txt
+~/kickthemout ❯❯❯ sudo -H pip3 install -r requirements.txt **NOTE: You will need a virtual environment to use pip**
 
-~/kickthemout ❯❯❯ sudo python3 kickthemout.py
+~/kickthemout ❯❯❯ sudo python kickthemout.py
 ```
 
 <br/>
@@ -108,14 +122,6 @@ To view all available options run:
 
 
 <br/>
-
-# Demo
-
-Here's a short demo:
-
-[![Asciinema Demo](https://nikolaskama.me/content/images/2017/01/kickthemout_asciinema.png)](https://asciinema.org/a/98200?autoplay=1&loop=1)
-
-(For more demos click [here](https://asciinema.org/~k4m4))
 
 
 <br/>
